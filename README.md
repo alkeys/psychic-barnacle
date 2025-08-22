@@ -13,6 +13,8 @@ Aquí encontrarás los comandos para correr el proyecto.
 # Instalar dependencias
 npm install
 
+pnpm install 
+
 # Ejecutar el proyecto en desarrollo
 pnpm run dev          
 
