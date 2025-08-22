@@ -4,6 +4,11 @@ Aquí encontrarás los comandos para correr el proyecto.
 
 ## Comandos
 
+#instalacion de componentes 
+```bash
+ npx shadcn@latest add  "nombre de componente"   
+ ```
+
 ```bash
 # Instalar dependencias
 npm install
