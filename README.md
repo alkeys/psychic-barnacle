@@ -9,10 +9,10 @@ Aquí encontrarás los comandos para correr el proyecto.
 npm install
 
 # Ejecutar el proyecto en desarrollo
-npm run dev
+pnpm run dev          
 
 # Construir para producción
-npm run build
+pnpm run build
 
 # Ejecutar pruebas
 npm test
