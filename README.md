@@ -11,7 +11,6 @@ Aquí encontrarás los comandos para correr el proyecto.
 
 ```bash
 # Instalar dependencias
-npm install
 
 pnpm install 
 
@@ -31,3 +30,5 @@ npm test
 - npm >= 6
 
 .
+
+
