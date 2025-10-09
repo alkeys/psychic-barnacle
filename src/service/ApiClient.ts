@@ -1,3 +1,4 @@
+
 import axios from "axios";
 import type {
     Cliente,
@@ -6,6 +7,7 @@ import type {
     TicketNew,
     TipoServicio,
     Usuario,
+    UsuarioGetLogin,
 } from "../models/entity";
 
 /**
@@ -16,12 +18,24 @@ import type {
  */
 
 /** URL base de la API */
-const apiUrl = "http://localhost:9090/innova-1.0-SNAPSHOT/";
+const apiUrl = "http://localhost:1000/innova-1.0-SNAPSHOT/";
 
 /** Instancia preconfigurada de Axios */
 const apiClient = axios.create({
     baseURL: apiUrl,
     headers: { "Content-Type": "application/json" },
+});
+
+// Add a request interceptor
+apiClient.interceptors.request.use(function (config) {
+    const token = localStorage.getItem('token');
+    if (token && config.url !== "/usuarios/login") {
+        config.headers.Authorization =  `Bearer ${token}`;
+    }
+    return config;
+}, function (error) {
+    // Do something with request error
+    return Promise.reject(error);
 });
 
 /* ===========================================================
@@ -336,10 +350,18 @@ export const UsuarioApi = {
      * @param {string} data.contrasena - Contraseña.
      * @returns {Promise<import("axios").AxiosResponse<Usuario>>} Datos del usuario autenticado.
      */
-    login: (data: { nombreUsuario: string; contrasena: string }) =>
-        apiClient.get<Usuario>(
-            `/usuarios/Login/${data.nombreUsuario}/${data.contrasena}`
-        ),
+    login: async (data: { nombreUsuario: string; contrasena: string }) => {
+        const response = await apiClient.post<UsuarioGetLogin>("/usuarios/login", data);
+        return response;
+    },
+
+    /**
+     * Cierra la sesión del usuario.
+     */
+    logout: () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+    }
 };
 
 /** Exportación por defecto de la instancia de Axios */
