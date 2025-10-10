@@ -5,7 +5,6 @@ import type { Usuario } from "../models/entity";
 import { UsuarioApi } from "../service/ApiClient";
 import { useAuth } from "../context/AuthContext";
 import { UserData } from "@/utils/Data";
-import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 const Login: React.FC = () => {
 	const { register, handleSubmit } = useForm<Usuario>();
@@ -18,38 +17,53 @@ const Login: React.FC = () => {
 		while (attempts < maxAttempts) {
 			try {
 				const response = await UsuarioApi.login(data);
-				console.log("Iniciando sesión:", response.data);
-				localStorage.setItem("token", response.data.token);
+
+				// Validar respuesta y token
+				if (
+					!response ||
+					!response.data ||
+					typeof response.data.token !== "string" ||
+					!response.data.token.trim()
+				) {
+					throw new Error("Token inválido en la respuesta.");
+				}
+
+				// Guardar token de forma segura
+				window.localStorage.setItem("token", response.data.token);
 
 				const userData = UserData(response.data, data.nombreUsuario);
+
+				// Validar datos de usuario
+				if (!userData || !userData.rol) {
+					throw new Error("Datos de usuario inválidos.");
+				}
+
 				auth.login(userData);
 
 				// Redirigir según el rol del usuario
-				switch (response.data.rol_cargado) {
+				switch (userData.rol) {
 					case "administrador":
-						// Redirigir a AdminPanel
 						navigate("/admin");
 						break;
 					case "tecnico":
-						// Redirigir a TecnicoPanel
 						navigate("/tecnico");
 						break;
 					case "cliente":
-						// Redirigir a ClientePanel
 						navigate("/cliente");
 						break;
 					default:
-						// Redirigir a Home
+						navigate("/");
 						break;
 				}
-				break; // Exit loop on success
+				break;
 			} catch (error) {
 				attempts++;
-				console.error(`Iniciando sesión fallida (intento ${attempts}):`, error);
+				console.error(
+					`Intento de inicio de sesión fallido (${attempts}):`,
+					error,
+				);
 				if (attempts >= maxAttempts) {
-					console.error(
-						"Se alcanzaron los máximos intentos de inicio de sesión.",
-					);
+					alert("Se alcanzaron los máximos intentos de inicio de sesión.");
 				}
 			}
 		}
