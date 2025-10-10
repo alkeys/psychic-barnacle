@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 // Importación de componentes
 import Dashboard from "./Dashboard";
 
-export default function AdminPanel() {
+export default function ClientePanel() {
 	const [activeTab, setActiveTab] = useState("dashboard");
 	const { currentUser, logout } = useAuth();
 
