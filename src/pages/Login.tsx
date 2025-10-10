@@ -5,8 +5,11 @@ import type { Usuario } from "../models/entity";
 import { UsuarioApi } from "../service/ApiClient";
 import { useAuth } from "../context/AuthContext";
 import { UserData } from "@/utils/Data";
+import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const Login: React.FC = () => {
 	const { register, handleSubmit } = useForm<Usuario>();
+	const navigate = useNavigate();
 	const auth = useAuth();
 
 	const onSubmit: SubmitHandler<Usuario> = async (data) => {
@@ -21,6 +24,24 @@ const Login: React.FC = () => {
 				const userData = UserData(response.data, data.nombreUsuario);
 				auth.login(userData);
 
+				// Redirigir según el rol del usuario
+				switch (response.data.rol_cargado) {
+					case "administrador":
+						// Redirigir a AdminPanel
+						navigate("/admin");
+						break;
+					case "tecnico":
+						// Redirigir a TecnicoPanel
+						navigate("/tecnico");
+						break;
+					case "cliente":
+						// Redirigir a ClientePanel
+						navigate("/cliente");
+						break;
+					default:
+						// Redirigir a Home
+						break;
+				}
 				break; // Exit loop on success
 			} catch (error) {
 				attempts++;

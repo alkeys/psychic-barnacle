@@ -26,12 +26,7 @@ export default function ClientePanel() {
 		}
 	};
 
-	const navItems = [
-		{ id: "dashboard", label: "Dashboard" },
-		{ id: "usuarios", label: "Usuarios" },
-		{ id: "tecnicos", label: "Técnicos" },
-		{ id: "clientes", label: "Clientes" },
-	];
+	const navItems = [{ id: "dashboard", label: "Dashboard" }];
 
 	return (
 		<div>
