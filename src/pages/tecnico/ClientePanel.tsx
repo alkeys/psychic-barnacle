@@ -5,13 +5,11 @@ import { useAuth } from "../../context/AuthContext";
 
 // Importación de componentes
 import Dashboard from "./Dashboard";
-import Usuarios from "./Usuarios";
-import Tecnicos from "./Tecnicos";
-import Clientes from "./Clientes";
-
 export default function AdminPanel() {
 	const [activeTab, setActiveTab] = useState("dashboard");
 	const { currentUser, logout } = useAuth();
+
+	const cargarUrlActivo = (estado: boolean) => {};
 
 	useEffect(() => {}, []);
 
@@ -23,19 +21,18 @@ export default function AdminPanel() {
 		switch (activeTab) {
 			case "dashboard":
 				return <Dashboard />;
-			case "usuarios":
-				return <Usuarios />;
-			case "tecnicos":
-				return <Tecnicos />;
-			case "clientes":
-				return <Clientes />;
 
 			default:
 				return <Dashboard />;
 		}
 	};
 
-	const navItems = [{ id: "dashboard", label: "Dashboard" }];
+	const navItems = [
+		{ id: "dashboard", label: "Dashboard" },
+		{ id: "usuarios", label: "Usuarios" },
+		{ id: "tecnicos", label: "Técnicos" },
+		{ id: "clientes", label: "Clientes" },
+	];
 
 	return (
 		<div>
