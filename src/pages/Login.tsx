@@ -4,7 +4,7 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import type { Usuario } from "../models/entity";
 import { UsuarioApi } from "../service/ApiClient";
 import { useAuth } from "../context/AuthContext";
-import type { UsuarioLoginContext } from "../context/AuthContext";
+import { UserData } from "@/utils/Data";
 const Login: React.FC = () => {
     const { register, handleSubmit } = useForm<Usuario>();
     const auth = useAuth();
@@ -16,27 +16,19 @@ const Login: React.FC = () => {
         const maxAttempts = 3;
         while (attempts < maxAttempts) {
             try {
-                const response = await UsuarioApi.login(data); 
-                console.log("Login successful:", response.data);
+                const response = await UsuarioApi.login(data);
+                console.log("Iniciando sesión:", response.data);
                 localStorage.setItem("token", response.data.token);
-                const userData: UsuarioLoginContext = {
-                    idUsuario: response.data.userId,
-                    nombreUsuario: data.nombreUsuario,
-                    rol: response.data.rol_cargado,
-                    idTecnico: response.data.tecnico?.id,
-                    idCliente: response.data.cliente?.id,
-                    nombre_completo: response.data.tecnico?.nombreCompleto || response.data.cliente?.nombreCompleto || "",
-                    correo: response.data.cliente?.correo,
-                    telefono: response.data.cliente?.telefono,
-                    especialidad: response.data.tecnico?.especialidad
-                };
+
+                const userData = UserData(response.data, data.nombreUsuario);
                 auth.login(userData);
-                break;
+            
+                break; // Exit loop on success
             } catch (error) {
                 attempts++;
-                console.error(`Login failed (attempt ${attempts}):`, error);
+                console.error(`Iniciando sesión fallida (intento ${attempts}):`, error);
                 if (attempts >= maxAttempts) {
-                    console.error("Max login attempts reached.");
+                    console.error("Se alcanzaron los máximos intentos de inicio de sesión.");
                 }
             }
         }
