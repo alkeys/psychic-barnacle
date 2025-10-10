@@ -68,7 +68,6 @@ export interface Usuario extends Entity {
 	contrasena: string;
 }
 
-
 export interface UsuarioGetLogin {
 	token: string;
 	rol_cargado: string;
@@ -76,7 +75,6 @@ export interface UsuarioGetLogin {
 	tecnico?: Tecnico;
 	cliente?: Cliente;
 }
-
 
 // El tipo unificado ahora usa los nuevos nombres
 export type UnifiedEntity =

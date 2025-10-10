@@ -1,0 +1,19 @@
+{
+  "editor.defaultFormatter": "rome.rome",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.rome": "explicit"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "rome.rome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "rome.rome"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "rome.rome"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "rome.rome"
+  }
+}
