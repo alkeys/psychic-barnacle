@@ -35,7 +35,12 @@ export default function AdminPanel() {
 		}
 	};
 
-	const navItems = [{ id: "dashboard", label: "Dashboard" }];
+	const navItems = [
+		{ id: "dashboard", label: "Dashboard" },
+		{ id: "clientes", label: "Clientes" },
+		{ id: "usuarios", label: "Usuarios" },
+		{ id: "tecnicos", label: "Técnicos" },
+	];
 
 	return (
 		<div>

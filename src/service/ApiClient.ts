@@ -17,7 +17,7 @@ import type {
  */
 
 /** URL base de la API */
-const apiUrl = "http://localhost:1000/innova-1.0-SNAPSHOT/";
+const apiUrl = " http://fedora:9090/innova-1.0-SNAPSHOT/";
 
 /** Instancia preconfigurada de Axios */
 const apiClient = axios.create({
@@ -25,19 +25,16 @@ const apiClient = axios.create({
 	headers: { "Content-Type": "application/json" },
 });
 
-// Add a request interceptor
+// Interceptor para agregar el token en cada solicitud
 apiClient.interceptors.request.use(
-	function (config) {
+	(config) => {
 		const token = localStorage.getItem("token");
-		if (token && config.url !== "/usuarios/login") {
+		if (token) {
 			config.headers.Authorization = `Bearer ${token}`;
 		}
 		return config;
 	},
-	function (error) {
-		// Do something with request error
-		return Promise.reject(error);
-	},
+	(error) => Promise.reject(error),
 );
 
 /* ===========================================================
@@ -119,9 +116,9 @@ export const ClienteApi = {
 	 * @param {number} hasta - Índice final.
 	 * @returns {Promise<import("axios").AxiosResponse<Cliente[]>>} Clientes en el rango.
 	 */
-	listarClientesRango: (desde: number, hasta: number) =>
+	listarClientesRango: (start: number, size: number) =>
 		apiClient.get<Cliente[]>("/clientes/listar/rango", {
-			params: { desde, hasta },
+			params: { start, size },
 		}),
 
 	/**
