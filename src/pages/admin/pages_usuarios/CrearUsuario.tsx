@@ -12,7 +12,7 @@ const CrearUsuario: React.FC = () => {
 		activo: true,
 		nombreCompleto: "",
 		especialidad: "",
-		usuarioId: 0,
+		idUsuario: 0,
 	});
 	const [cliente, setCliente] = useState<Cliente>({
 		nombreCompleto: "",
@@ -27,42 +27,22 @@ const CrearUsuario: React.FC = () => {
 		setUsuario((prev) => ({ ...prev, [name]: value }));
 	};
 
-	const handlerCrearTecnico = async (usuarioId: number, tecnico: Tecnico) => {
-		let intentos = 0;
-		let exito = false;
-		let response = null;
-
-		while (intentos < 2 && !exito) {
-			try {
-				console.log(`🔄 Intento ${intentos + 1}: Creando técnico...`);
-				response = await tecnicoApi.crearTecnico({
-					...tecnico,
-					usuarioId,
-				});
-
-				if (response.status === 201) {
-					exito = true;
-					console.log("✅ Técnico creado:", response.data);
-				} else {
-					console.warn("⚠️ Respuesta inesperada:", response);
-				}
-			} catch (error) {
-				console.error(
-					`❌ Error al crear técnico (intento ${intentos + 1}):`,
-					error,
-				);
+	const handlerCrearTecnico = async (idUsuario: number, tecnico: Tecnico) => {
+		try {
+			const response = await tecnicoApi.crearTecnico({
+				...tecnico,
+				idUsuario: idUsuario,
+			});
+			if (response.status === 201) {
+				console.log("✅ Técnico creado:", response.data);
+				alert("Técnico creado exitosamente");
+			} else {
+				console.error("❌ Error: respuesta inesperada", response);
+				alert("Error al crear técnico");
 			}
-
-			if (!exito) {
-				await new Promise((res) => setTimeout(res, 1000)); // Espera antes del siguiente intento
-			}
-			intentos++;
-		}
-
-		if (exito && response) {
-			alert("✅ Técnico creado exitosamente");
-		} else {
-			alert("❌ No se pudo crear el técnico después de 2 intentos");
+		} catch (error) {
+			console.error("❌ Error al crear técnico:", error);
+			alert("Error al crear técnico");
 		}
 	};
 

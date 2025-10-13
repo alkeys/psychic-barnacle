@@ -17,7 +17,7 @@ interface Persona extends Entity {
 export interface Tecnico extends Persona {
 	activo: boolean;
 	especialidad: string;
-	usuarioId?: number;
+	idUsuario?: number;
 }
 
 export interface Cliente extends Persona {
