@@ -10,7 +10,6 @@ const Usuarios: React.FC = () => {
 		switch (activeTab) {
 			case "listar":
 				return <ListarUsuarios />;
-			// case "agregar":
 
 			default:
 				return <ListarUsuarios />;

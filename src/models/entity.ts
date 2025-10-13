@@ -63,8 +63,12 @@ export interface TicketNew {
 }
 
 export interface Usuario extends Entity {
-	idcliente: number;
-	idtecnico: number;
+	idcliente?: number;
+	idtecnico?: number;
+
+	idCliente?: number;
+	idTecnico?: number;
+
 	nombreUsuario: string;
 	rol: string;
 	contrasena: string;

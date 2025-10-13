@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
-import type { Usuario } from "../../../../models/entity";
-import EditarCliente from "./EditarCliente";
-import EditarTecnico from "./EditarTecnico";
+import type { Usuario, Cliente, Tecnico } from "../../../../models/entity";
+import {
+	UsuarioApi,
+	ClienteApi,
+	tecnicoApi,
+} from "../../../../service/ApiClient";
 
 type EditarUsuarioProps = {
 	usuario: Usuario;
@@ -14,11 +17,51 @@ const EditarUsuario: React.FC<EditarUsuarioProps> = ({
 	onGuardar,
 	onCancelar,
 }) => {
+	const [cliente, setCliente] = useState<Cliente | null>(null);
+	const [tecnico, setTecnico] = useState<Tecnico | null>(null);
 	const [form, setForm] = useState<Usuario>(usuario);
+	const [idcliente, setIdcliente] = useState<number | null>(
+		usuario.idcliente ?? null,
+	);
+	const [idtecnico, setIdtecnico] = useState<number | null>(
+		usuario.idtecnico ?? null,
+	);
 
 	useEffect(() => {
 		setForm(usuario);
-		console.log("Usuario en EditarUsuario:", usuario);
+		setIdcliente(usuario.idCliente ?? null);
+		setIdtecnico(usuario.idTecnico ?? null);
+		if (usuario.rol === "cliente" && idcliente) {
+			console.log("Recuperando cliente con ID:", idcliente);
+			const recuperarCliente = async () => {
+				try {
+					if (idcliente !== undefined && idcliente !== null) {
+						const response = await ClienteApi.obtenerCliente(idcliente);
+						setCliente(response.data);
+					}
+				} catch (error) {
+					console.error("Error al obtener cliente:", error);
+				}
+			};
+			recuperarCliente();
+		} else {
+			setCliente(null);
+		}
+		if (usuario.rol === "tecnico" && idtecnico) {
+			const recuperarTecnico = async () => {
+				try {
+					if (idtecnico !== undefined && idtecnico !== null) {
+						const response = await tecnicoApi.obtenerTecnico(idtecnico);
+						setTecnico(response.data);
+					}
+				} catch (error) {
+					console.error("Error al obtener técnico:", error);
+				}
+			};
+			recuperarTecnico();
+		} else {
+			setTecnico(null);
+		}
 	}, [usuario]);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,17 +98,7 @@ const EditarUsuario: React.FC<EditarUsuarioProps> = ({
 					required
 				/>
 			</div>
-			<div>
-				<label>ID Técnico:</label>
-				<EditarTecnico id={form.idtecnico ?? ""} />
-			</div>
-			<div>
-				<label>ID Cliente:</label>
-				<EditarCliente
-					id={form.idcliente}
-					onChange={(id) => setForm((prev) => ({ ...prev, idcliente: id }))}
-				/>
-			</div>
+
 			<div>
 				<label>Rol:</label>
 				<div>

@@ -1,4 +1,3 @@
-// ...existing code...
 import React, { useEffect, useState } from "react";
 import type { Cliente } from "../../../models/entity";
 import { ClienteApi } from "../../../service/ApiClient";
@@ -8,55 +7,61 @@ const ListarClientes: React.FC = () => {
 	const [clientes, setClientes] = useState<Cliente[]>([]);
 	const [clienteSeleccionado, setClienteSeleccionado] =
 		useState<Cliente | null>(null);
-	const [idSeleccionado, setIdSeleccionado] = useState<number | null>(null);
 
-	useEffect(() => {
-		// Simulación de carga de datos
-		const fetchClientes = async () => {
+	const fetchClientes = async () => {
+		try {
 			const response = await ClienteApi.listarClientes();
 			if (response?.data) {
 				setClientes(response.data);
 			}
-		};
+		} catch (error) {
+			console.error("Error al obtener clientes:", error);
+		}
+	};
+
+	useEffect(() => {
 		fetchClientes();
-		console.log(clientes);
 	}, []);
 
-	const handleSeleccionar = (cliente: Cliente, id: number | undefined) => {
+	const handleEditar = (cliente: Cliente) => {
 		setClienteSeleccionado(cliente);
-		if (id !== undefined) {
-			setIdSeleccionado(id);
+	};
+
+	const handleEliminar = async (id?: number) => {
+		if (id == null) {
+			console.error("ID de cliente inválido para eliminar.");
+			return;
+		}
+		const confirmation = window.confirm(
+			"¿Estás seguro de que deseas eliminar este cliente?",
+		);
+		if (confirmation) {
+			try {
+				await ClienteApi.eliminarCliente(id);
+				fetchClientes(); // Recargar la lista de clientes
+			} catch (error) {
+				console.error("Error al eliminar el cliente:", error);
+			}
+		}
+	};
+
+	const handleGuardar = async (clienteActualizado: Cliente) => {
+		const id = clienteActualizado.id;
+		if (id == null) {
+			console.error("ID de cliente inválido para actualizar.");
+			return;
+		}
+		try {
+			await ClienteApi.actualizarCliente(id, clienteActualizado);
+			setClienteSeleccionado(null); // Ocultar el formulario de edición
+			fetchClientes(); // Recargar la lista de clientes
+		} catch (error) {
+			console.error("Error al guardar el cliente:", error);
 		}
 	};
 
 	const handleCancelar = () => {
 		setClienteSeleccionado(null);
-	};
-
-	const handleGuardar = async (clienteActualizado: Cliente) => {
-		// Intentar actualizar en API si existe el método
-		try {
-			let actualizado = clienteActualizado;
-			if (typeof ClienteApi.actualizarCliente === "function") {
-				if (idSeleccionado === null) {
-					throw new Error("ID del cliente no seleccionado");
-				}
-				const resp = await ClienteApi.actualizarCliente(
-					idSeleccionado,
-					clienteActualizado,
-				);
-				if (resp?.data) {
-					actualizado = resp.data;
-				}
-			}
-			setClientes((prev) =>
-				prev.map((c) => (c.id === actualizado.id ? actualizado : c)),
-			);
-		} catch (err) {
-			console.error("Error al guardar cliente:", err);
-		} finally {
-			setClienteSeleccionado(null);
-		}
 	};
 
 	return (
@@ -65,13 +70,12 @@ const ListarClientes: React.FC = () => {
 			<ul>
 				{clientes.map((cliente) => (
 					<li key={cliente.id}>
-						{cliente.id}, {cliente.nombreCompleto} - {cliente.correo} -{" "}
-						{cliente.telefono}
-						<button
-							type="button"
-							onClick={() => handleSeleccionar(cliente, cliente.id)}
-						>
+						{cliente.nombreCompleto} - {cliente.correo} - {cliente.telefono}
+						<button type="button" onClick={() => handleEditar(cliente)}>
 							Editar
+						</button>
+						<button type="button" onClick={() => handleEliminar(cliente.id)}>
+							Eliminar
 						</button>
 					</li>
 				))}
@@ -79,7 +83,7 @@ const ListarClientes: React.FC = () => {
 
 			{clienteSeleccionado && (
 				<div>
-					<h2>Editar Cliente {clienteSeleccionado.id}</h2>
+					<h2>Editar Cliente</h2>
 					<EditarCliente
 						cliente={clienteSeleccionado}
 						onGuardar={handleGuardar}

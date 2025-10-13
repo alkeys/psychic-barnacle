@@ -14,6 +14,7 @@ const ListarUsuarios: React.FC = () => {
 		// Simulación de carga de datos
 		const fetchUsuarios = async () => {
 			const response = await UsuarioApi.listarUsuarios();
+			console.log("Usuarios cargados:", response.data);
 			setUsuarios(response.data);
 		};
 		fetchUsuarios();

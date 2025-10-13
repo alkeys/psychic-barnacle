@@ -1,71 +1,49 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import type { Cliente } from "../../../../models/entity";
 
-type EditarClienteProps = {
+interface EditarClienteProps {
 	cliente: Cliente;
-	onGuardar: (clienteActualizado: Cliente) => void;
+	onGuardar: (cliente: Cliente) => void;
 	onCancelar: () => void;
-};
+}
 
 const EditarCliente: React.FC<EditarClienteProps> = ({
 	cliente,
 	onGuardar,
 	onCancelar,
 }) => {
-	const [form, setForm] = useState<Cliente>(cliente);
+	const [nombreCompleto, setNombreCompleto] = useState(cliente.nombreCompleto);
+	const [correo, setCorreo] = useState(cliente.correo);
+	const [telefono, setTelefono] = useState(cliente.telefono);
 
-	useEffect(() => {
-		setForm(cliente);
-	}, [cliente]);
-
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = e.target;
-		setForm((prev) => ({
-			...prev,
-			[name]: value,
-		}));
-	};
-
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		onGuardar(form);
+	const handleGuardar = () => {
+		onGuardar({ ...cliente, nombreCompleto, correo, telefono });
 	};
 
 	return (
-		<form onSubmit={handleSubmit}>
-			<div>
-				<label>Nombre:</label>
-				<input
-					name="nombreCompleto"
-					value={form.nombreCompleto}
-					onChange={handleChange}
-					required
-				/>
-			</div>
-			<div>
-				<label>Email:</label>
-				<input
-					name="correo"
-					type="email"
-					value={form.correo}
-					onChange={handleChange}
-					required
-				/>
-			</div>
-			<div>
-				<label>Teléfono:</label>
-				<input
-					name="telefono"
-					value={form.telefono}
-					onChange={handleChange}
-					required
-				/>
-			</div>
-			<button type="submit">Guardar</button>
+		<div>
+			<input
+				type="text"
+				value={nombreCompleto}
+				onChange={(e) => setNombreCompleto(e.target.value)}
+			/>
+			<input
+				type="text"
+				value={correo}
+				onChange={(e) => setCorreo(e.target.value)}
+			/>
+			<input
+				type="text"
+				value={telefono}
+				onChange={(e) => setTelefono(e.target.value)}
+			/>
+			<button type="button" onClick={handleGuardar}>
+				Guardar
+			</button>
 			<button type="button" onClick={onCancelar}>
 				Cancelar
 			</button>
-		</form>
+		</div>
 	);
 };
 

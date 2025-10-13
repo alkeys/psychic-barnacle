@@ -2,10 +2,11 @@
 import React from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import type { Usuario } from "../models/entity";
-import { UsuarioApi } from "../service/ApiClient";
+import { LoginApi, UsuarioApi } from "../service/ApiClient";
 import { useAuth } from "../context/AuthContext";
 import { UserData } from "@/utils/Data";
 import { useNavigate } from "react-router-dom";
+import { log } from "console";
 const Login: React.FC = () => {
 	const { register, handleSubmit } = useForm<Usuario>();
 	const navigate = useNavigate();
@@ -16,7 +17,7 @@ const Login: React.FC = () => {
 		const maxAttempts = 3;
 		while (attempts < maxAttempts) {
 			try {
-				const response = await UsuarioApi.login(data);
+				const response = await LoginApi.login(data);
 
 				// Validar respuesta y token
 				if (
