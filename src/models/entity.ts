@@ -15,12 +15,15 @@ interface Persona extends Entity {
 // --- Entidades Específicas ---
 
 export interface Tecnico extends Persona {
+	activo: boolean;
 	especialidad: string;
+	usuarioId?: number;
 }
 
 export interface Cliente extends Persona {
 	correo: string;
 	telefono: string;
+	usuarioId?: number;
 }
 
 export interface ClienteGet extends Cliente {

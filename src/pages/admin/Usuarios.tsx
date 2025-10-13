@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ListarUsuarios from "./pages_usuarios/Listarusuarios";
+import CrearUsuario from "./pages_usuarios/CrearUsuario";
 
 const Usuarios: React.FC = () => {
 	const [activeTab, setActiveTab] = useState("dashboard");
@@ -10,13 +11,18 @@ const Usuarios: React.FC = () => {
 		switch (activeTab) {
 			case "listar":
 				return <ListarUsuarios />;
+			case "crear":
+				return <CrearUsuario />;
 
 			default:
 				return <ListarUsuarios />;
 		}
 	};
 
-	const navItems = [{ id: "listar", label: "Listar Usuarios" }];
+	const navItems = [
+		{ id: "listar", label: "Listar Usuarios" },
+		{ id: "crear", label: "Crear Usuario" },
+	];
 
 	return (
 		<div>
