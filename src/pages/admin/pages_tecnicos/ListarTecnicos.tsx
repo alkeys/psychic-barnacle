@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import type { Tecnico } from "../../../models/entity";
 import { tecnicoApi } from "../../../service/ApiClient";
-import EditarTecnico from "./components/EditarTecnico";
+import EditarTecnico from "../components/EditarTecnico";
 
 const ListarTecnicos: React.FC = () => {
 	const [tecnicos, setTecnicos] = useState<Tecnico[]>([]);

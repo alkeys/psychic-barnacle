@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import type { Usuario, Cliente, Tecnico } from "../../../../models/entity";
+import EditarCliente from "../../components/EditarCliente";
+import EditarTecnico from "../../components/EditarTecnico";
 import {
 	UsuarioApi,
 	ClienteApi,
@@ -20,23 +22,15 @@ const EditarUsuario: React.FC<EditarUsuarioProps> = ({
 	const [cliente, setCliente] = useState<Cliente | null>(null);
 	const [tecnico, setTecnico] = useState<Tecnico | null>(null);
 	const [form, setForm] = useState<Usuario>(usuario);
-	const [idcliente, setIdcliente] = useState<number | null>(
-		usuario.idcliente ?? null,
-	);
-	const [idtecnico, setIdtecnico] = useState<number | null>(
-		usuario.idtecnico ?? null,
-	);
 
 	useEffect(() => {
 		setForm(usuario);
-		setIdcliente(usuario.idCliente ?? null);
-		setIdtecnico(usuario.idTecnico ?? null);
-		if (usuario.rol === "cliente" && idcliente) {
-			console.log("Recuperando cliente con ID:", idcliente);
+		if (usuario.rol === "cliente" && usuario.idCliente) {
+			console.log("Recuperando cliente con ID:", usuario.idCliente);
 			const recuperarCliente = async () => {
 				try {
-					if (idcliente !== undefined && idcliente !== null) {
-						const response = await ClienteApi.obtenerCliente(idcliente);
+					if (usuario.idCliente !== undefined && usuario.idCliente !== null) {
+						const response = await ClienteApi.obtenerCliente(usuario.idCliente);
 						setCliente(response.data);
 					}
 				} catch (error) {
@@ -47,11 +41,11 @@ const EditarUsuario: React.FC<EditarUsuarioProps> = ({
 		} else {
 			setCliente(null);
 		}
-		if (usuario.rol === "tecnico" && idtecnico) {
+		if (usuario.rol === "tecnico" && usuario.idTecnico) {
 			const recuperarTecnico = async () => {
 				try {
-					if (idtecnico !== undefined && idtecnico !== null) {
-						const response = await tecnicoApi.obtenerTecnico(idtecnico);
+					if (usuario.idTecnico !== undefined && usuario.idTecnico !== null) {
+						const response = await tecnicoApi.obtenerTecnico(usuario.idTecnico);
 						setTecnico(response.data);
 					}
 				} catch (error) {
@@ -77,6 +71,47 @@ const EditarUsuario: React.FC<EditarUsuarioProps> = ({
 		onGuardar(form);
 	};
 
+	const handleGuardarCliente = (clienteActualizado: Cliente) => {
+		const id = clienteActualizado.id;
+		if (id == null) {
+			console.error("ID de cliente inválido para actualizar.");
+			return;
+		}
+		const actualizarCliente = async () => {
+			try {
+				await ClienteApi.actualizarCliente(id, clienteActualizado);
+				setCliente(clienteActualizado); // Actualiza el estado local del cliente
+				setForm((prev) => ({
+					...prev,
+					idCliente: clienteActualizado.id,
+				}));
+			} catch (error) {
+				console.error("Error al guardar el cliente:", error);
+			}
+		};
+		actualizarCliente();
+	};
+
+	const handleCancelarCliente = () => {
+		setCliente(null);
+		setForm((prev) => ({
+			...prev,
+			idCliente: undefined,
+			rol: "tecnico", // Cambiar el rol si se elimina el cliente
+		}));
+	};
+
+	const handleGuardarTecnico = (tecnicoActualizado: Tecnico) => {
+		setTecnico(tecnicoActualizado);
+		setForm((prev) => ({
+			...prev,
+			idTecnico: tecnicoActualizado.id,
+		}));
+	};
+
+	const handleCancelarTecnico = () => {
+		setTecnico(null);
+	};
 	return (
 		<form onSubmit={handleSubmit}>
 			<div>
@@ -134,6 +169,23 @@ const EditarUsuario: React.FC<EditarUsuarioProps> = ({
 						Cliente
 					</label>
 				</div>
+
+				{form.rol === "tecnico" && tecnico && (
+					<EditarTecnico
+						tecnico={tecnico}
+						onGuardar={handleGuardarTecnico}
+						onCancelar={handleCancelarTecnico}
+					/>
+				)}
+			</div>
+			<div>
+				{form.rol === "cliente" && cliente && (
+					<EditarCliente
+						cliente={cliente}
+						onGuardar={handleGuardarCliente}
+						onCancelar={handleCancelarCliente}
+					/>
+				)}
 			</div>
 			<button type="submit">Guardar</button>
 			<button type="button" onClick={onCancelar}>

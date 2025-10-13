@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import type { Cliente } from "../../../models/entity";
 import { ClienteApi } from "../../../service/ApiClient";
-import EditarCliente from "./components/EditarCliente";
+import EditarCliente from "../components/EditarCliente";
 
 const ListarClientes: React.FC = () => {
 	const [clientes, setClientes] = useState<Cliente[]>([]);

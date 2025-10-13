@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { Cliente } from "../../../../models/entity";
+import type { Cliente } from "../../../models/entity";
 
 interface EditarClienteProps {
 	cliente: Cliente;

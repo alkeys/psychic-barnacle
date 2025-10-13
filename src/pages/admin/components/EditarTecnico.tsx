@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { Tecnico } from "../../../../models/entity";
+import type { Tecnico } from "../../../models/entity";
 
 interface EditarTecnicoProps {
 	tecnico: Tecnico;
