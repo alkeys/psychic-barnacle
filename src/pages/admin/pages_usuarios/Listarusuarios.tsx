@@ -35,6 +35,17 @@ const ListarUsuarios: React.FC = () => {
 		// Intentar actualizar en API si existe el método
 	};
 
+	const handleEliminar = async (id: number) => {
+		// Intentar eliminar en API si existe el métod
+		try {
+			await UsuarioApi.eliminarUsuario(id);
+			// Actualizar la lista localmente
+			setUsuarios(usuarios.filter((usuario) => usuario.id !== id));
+		} catch (error) {
+			console.error("Error al eliminar usuario:", error);
+		}
+	};
+
 	return (
 		<div>
 			<h1>Lista de Usuarios</h1>
@@ -49,6 +60,15 @@ const ListarUsuarios: React.FC = () => {
 							onClick={() => handleSeleccionar(usuario, usuario.id)}
 						>
 							Editar
+						</button>
+						{/* Botón para eliminar */}
+						<button
+							type="button"
+							onClick={() =>
+								usuario.id !== undefined && handleEliminar(usuario.id)
+							}
+						>
+							Eliminar
 						</button>
 					</li>
 				))}
