@@ -74,9 +74,6 @@ const ListarClientes: React.FC = () => {
 						<button type="button" onClick={() => handleEditar(cliente)}>
 							Editar
 						</button>
-						<button type="button" onClick={() => handleEliminar(cliente.id)}>
-							Eliminar
-						</button>
 					</li>
 				))}
 			</ul>

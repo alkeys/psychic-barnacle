@@ -21,43 +21,42 @@ const EditarUsuario: React.FC<EditarUsuarioProps> = ({
 }) => {
 	const [cliente, setCliente] = useState<Cliente | null>(null);
 	const [tecnico, setTecnico] = useState<Tecnico | null>(null);
-	const [form, setForm] = useState<Usuario>(usuario);
+	const [form, setForm] = useState<Usuario>({ ...usuario }); // copia inicial
 
+	// 🔁 Efecto: actualiza cuando cambia el usuario
 	useEffect(() => {
-		setForm(usuario);
-		if (usuario.rol === "cliente" && usuario.idCliente) {
-			console.log("Recuperando cliente con ID:", usuario.idCliente);
-			const recuperarCliente = async () => {
-				try {
-					if (usuario.idCliente !== undefined && usuario.idCliente !== null) {
-						const response = await ClienteApi.obtenerCliente(usuario.idCliente);
-						setCliente(response.data);
-					}
-				} catch (error) {
-					console.error("Error al obtener cliente:", error);
+		const u = { ...usuario }; // clona para evitar referencia compartida
+		setForm(u);
+		setCliente(null);
+		setTecnico(null);
+
+		const cargarDatos = async () => {
+			try {
+				if (u.rol === "cliente" && u.idCliente) {
+					console.log("Recuperando cliente con ID:", u.idCliente);
+					const response = await ClienteApi.obtenerCliente(u.idCliente);
+					setCliente(response.data);
 				}
-			};
-			recuperarCliente();
-		} else {
+				if (u.rol === "tecnico" && u.idTecnico) {
+					console.log("Recuperando técnico con ID:", u.idTecnico);
+					const response = await tecnicoApi.obtenerTecnico(u.idTecnico);
+					setTecnico(response.data);
+				}
+			} catch (error) {
+				console.error("Error al cargar datos del usuario:", error);
+			}
+		};
+
+		cargarDatos();
+
+		// cleanup: evita que setState afecte cuando se cambia de usuario
+		return () => {
 			setCliente(null);
-		}
-		if (usuario.rol === "tecnico" && usuario.idTecnico) {
-			const recuperarTecnico = async () => {
-				try {
-					if (usuario.idTecnico !== undefined && usuario.idTecnico !== null) {
-						const response = await tecnicoApi.obtenerTecnico(usuario.idTecnico);
-						setTecnico(response.data);
-					}
-				} catch (error) {
-					console.error("Error al obtener técnico:", error);
-				}
-			};
-			recuperarTecnico();
-		} else {
 			setTecnico(null);
-		}
+		};
 	}, [usuario]);
 
+	// 🧩 Manejo de cambios en inputs
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
 		setForm((prev) => ({
@@ -66,31 +65,42 @@ const EditarUsuario: React.FC<EditarUsuarioProps> = ({
 		}));
 	};
 
-	const handleSubmit = (e: React.FormEvent) => {
+	// 💾 Guardar usuario
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		onGuardar(form);
+
+		if (form.id == null) {
+			console.error("ID de usuario inválido para actualizar.");
+			return;
+		}
+
 		try {
-			if (form.id == null) {
-				console.error("ID de usuario inválido para actualizar.");
-				return;
-			}
-			UsuarioApi.actualizarUsuario(form.id, form);
-			alert("Usuario actualizado con éxito");
+			await UsuarioApi.actualizarUsuario(form.id, form);
+			onGuardar(form);
+			alert("✅ Usuario actualizado con éxito");
 		} catch (error) {
 			console.error("Error al actualizar el usuario:", error);
+			alert("❌ Error al actualizar el usuario");
 		}
 	};
 
+	// 🧍 Guardar cliente
 	const handleGuardarCliente = (clienteActualizado: Cliente) => {
-		const id = clienteActualizado.id;
-		if (id == null) {
+		if (clienteActualizado.id == null) {
 			console.error("ID de cliente inválido para actualizar.");
 			return;
 		}
 		const actualizarCliente = async () => {
 			try {
-				await ClienteApi.actualizarCliente(id, clienteActualizado);
-				setCliente(clienteActualizado); // Actualiza el estado local del cliente
+				if (form.id == null || clienteActualizado.id == null) {
+					console.error("ID de usuario inválido para actualizar.");
+					return;
+				}
+				await ClienteApi.actualizarCliente(
+					clienteActualizado.id,
+					clienteActualizado,
+				);
+				setCliente(clienteActualizado);
 				setForm((prev) => ({
 					...prev,
 					idCliente: clienteActualizado.id,
@@ -107,10 +117,11 @@ const EditarUsuario: React.FC<EditarUsuarioProps> = ({
 		setForm((prev) => ({
 			...prev,
 			idCliente: undefined,
-			rol: "tecnico", // Cambiar el rol si se elimina el cliente
+			rol: "tecnico", // cambia a técnico si se borra cliente
 		}));
 	};
 
+	// 🔧 Guardar técnico
 	const handleGuardarTecnico = (tecnicoActualizado: Tecnico) => {
 		setTecnico(tecnicoActualizado);
 		setForm((prev) => ({
@@ -122,87 +133,99 @@ const EditarUsuario: React.FC<EditarUsuarioProps> = ({
 	const handleCancelarTecnico = () => {
 		setTecnico(null);
 	};
+
 	return (
 		<form onSubmit={handleSubmit}>
 			<div>
 				<label>Nombre:</label>
 				<input
 					name="nombreUsuario"
-					value={form.nombreUsuario}
+					value={form.nombreUsuario || ""}
 					onChange={handleChange}
 					required
 				/>
 			</div>
+
 			<div>
 				<label>Contraseña:</label>
 				<input
 					name="contrasena"
 					type="password"
-					value={form.contrasena}
+					value={form.contrasena || ""}
 					onChange={handleChange}
-					required
 				/>
 			</div>
 
 			<div>
 				<label>Rol:</label>
 				<div>
-					<label>
-						<input
-							type="radio"
-							name="rol"
-							value="administrador"
-							checked={form.rol === "administrador"}
-							onChange={handleChange}
-							required
-						/>
-						Administrador
-					</label>
-					<label>
-						<input
-							type="radio"
-							name="rol"
-							value="tecnico"
-							checked={form.rol === "tecnico"}
-							onChange={handleChange}
-						/>
-						Técnico
-					</label>
-					<label>
-						<input
-							type="radio"
-							name="rol"
-							value="cliente"
-							checked={form.rol === "cliente"}
-							onChange={handleChange}
-						/>
-						Cliente
-					</label>
+					{form.rol === "administrador" && (
+						<label>
+							<input
+								type="radio"
+								name="rol"
+								value="administrador"
+								checked={form.rol === "administrador"}
+								onChange={handleChange}
+							/>
+							Administrador
+						</label>
+					)}
+					{form.rol === "tecnico" && tecnico && (
+						<label>
+							<input
+								type="radio"
+								name="rol"
+								value="tecnico"
+								checked={form.rol === "tecnico"}
+								onChange={handleChange}
+							/>
+							Técnico
+						</label>
+					)}
+					{form.rol === "cliente" && cliente && (
+						<label>
+							<input
+								type="radio"
+								name="rol"
+								value="cliente"
+								checked={form.rol === "cliente"}
+								onChange={handleChange}
+							/>
+							Cliente
+						</label>
+					)}
 				</div>
+			</div>
 
-				{form.rol === "tecnico" && tecnico && (
-					<EditarTecnico
-						tecnico={tecnico}
-						onGuardar={handleGuardarTecnico}
-						onCancelar={handleCancelarTecnico}
-					/>
-				)}
+			{/* 🔹 Si es técnico, muestra su editor */}
+			{form.rol === "tecnico" && tecnico && (
+				<EditarTecnico
+					tecnico={tecnico}
+					onGuardar={handleGuardarTecnico}
+					onCancelar={handleCancelarTecnico}
+				/>
+			)}
+
+			{/* 🔹 Si es cliente, muestra su editor */}
+			{form.rol === "cliente" && cliente && (
+				<EditarCliente
+					cliente={cliente}
+					onGuardar={handleGuardarCliente}
+					onCancelar={handleCancelarCliente}
+				/>
+			)}
+
+			<div style={{ marginTop: "1rem" }}>
+				<button type="submit">Guardar</button>
+				<button
+					type="button"
+					onClick={onCancelar}
+					style={{ marginLeft: "0.5rem" }}
+				>
+					Cancelar
+				</button>
 			</div>
-			<div>
-				{form.rol === "cliente" && cliente && (
-					<EditarCliente
-						cliente={cliente}
-						onGuardar={handleGuardarCliente}
-						onCancelar={handleCancelarCliente}
-					/>
-				)}
-			</div>
-			<button type="submit" onClick={handleSubmit}>
-				Guardar
-			</button>
-			<button type="button" onClick={onCancelar}>
-				Cancelar
-			</button>
 		</form>
 	);
 };
