@@ -3,7 +3,7 @@ import "./App.css";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import AdminPanel from "./pages/admin/AdminPanel";
-import TecnicoPanel from "./pages/tecnico/ClientePanel";
+import TecnicoPanel from "./pages/tecnico/TecnicoPanel";
 import ClientePanel from "./pages/cliente/ClientePanel";
 
 function App() {

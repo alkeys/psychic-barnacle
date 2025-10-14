@@ -7,7 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import Dashboard from "./Dashboard";
 import { useNavigate } from "react-router-dom";
 
-export default function ClientePanel() {
+export default function TecnicoPanel() {
 	const [activeTab, setActiveTab] = useState("dashboard");
 	const { currentUser, logout } = useAuth();
 	const navigate = useNavigate();
@@ -44,7 +44,7 @@ export default function ClientePanel() {
 									<span className="text-xl font-bold text-white">A</span>
 								</div>
 								<span className="text-xl font-bold bg-gradient-to-r from-[#be185d] to-[#a21caf] bg-clip-text text-transparent">
-									Panel Cliente
+									Panel Técnico
 								</span>
 							</div>
 
@@ -95,7 +95,7 @@ export default function ClientePanel() {
 										Bienvenido
 									</span>
 									<span className="text-sm text-[#be185d] font-semibold">
-										{currentUser?.nombreUsuario || "Cliente"}
+										{currentUser?.nombreUsuario || "Técnico"}
 									</span>
 								</div>
 							</div>
