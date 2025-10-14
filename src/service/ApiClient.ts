@@ -10,7 +10,7 @@ import type {
 } from "../models/entity";
 
 /** URL base de la API */
-const apiUrl = "http://fedora:9090/innova-1.0-SNAPSHOT/";
+const apiUrl = "http://192.168.1.13:9090/innova-1.0-SNAPSHOT/";
 
 /** Instancia preconfigurada de Axios */
 const apiClient = axios.create({
@@ -110,7 +110,7 @@ export const UsuarioApi = {
 		apiClient.get<Usuario>(`/usuarios/obtener/${id}`),
 	crearUsuario: (data: Usuario) =>
 		apiClient.post<Usuario>("/usuarios/crear", data),
-	actualizarUsuario: (id: string | number, data: Usuario) =>
+	actualizarUsuario: (id: number | number, data: Usuario) =>
 		apiClient.put<Usuario>(`/usuarios/actualizar/${id}`, data),
 	eliminarUsuario: (id: string | number) =>
 		apiClient.delete<void>(`/usuarios/eliminar/${id}`),

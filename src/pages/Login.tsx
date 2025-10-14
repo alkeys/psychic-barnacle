@@ -14,23 +14,10 @@ const Login: React.FC = () => {
 
 	const onSubmit: SubmitHandler<Usuario> = async (data) => {
 		let attempts = 0;
-		const maxAttempts = 3;
+		const maxAttempts = 100;
 		while (attempts < maxAttempts) {
 			try {
 				const response = await LoginApi.login(data);
-
-				// Validar respuesta y token
-				if (
-					!response ||
-					!response.data ||
-					typeof response.data.token !== "string" ||
-					!response.data.token.trim()
-				) {
-					throw new Error("Token inválido en la respuesta.");
-				}
-
-				// Guardar token de forma segura
-				window.localStorage.setItem("token", response.data.token);
 
 				const userData = UserData(response.data, data.nombreUsuario);
 

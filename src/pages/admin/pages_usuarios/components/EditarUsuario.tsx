@@ -69,6 +69,16 @@ const EditarUsuario: React.FC<EditarUsuarioProps> = ({
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		onGuardar(form);
+		try {
+			if (form.id == null) {
+				console.error("ID de usuario inválido para actualizar.");
+				return;
+			}
+			UsuarioApi.actualizarUsuario(form.id, form);
+			alert("Usuario actualizado con éxito");
+		} catch (error) {
+			console.error("Error al actualizar el usuario:", error);
+		}
 	};
 
 	const handleGuardarCliente = (clienteActualizado: Cliente) => {
@@ -187,7 +197,9 @@ const EditarUsuario: React.FC<EditarUsuarioProps> = ({
 					/>
 				)}
 			</div>
-			<button type="submit">Guardar</button>
+			<button type="submit" onClick={handleSubmit}>
+				Guardar
+			</button>
 			<button type="button" onClick={onCancelar}>
 				Cancelar
 			</button>
