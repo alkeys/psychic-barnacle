@@ -2,7 +2,6 @@ import { test } from "vitest";
 import axios from "axios";
 import { TicketApi } from "../service/ApiClient";
 import type { TicketNew } from "../models/entity";
-import { i } from "framer-motion/client";
 
 let idTicketCreado: number | undefined;
 //test para crear un ticket
@@ -112,6 +111,7 @@ test("actualizar ticket", async () => {
 
 //eliminar un ticket
 test("eliminar ticket", async () => {
+	await new Promise((resolve) => setTimeout(resolve, 3000));
 	const ticketId = idTicketCreado || 1; // Cambia esto por un ID válido
 
 	try {
