@@ -54,6 +54,7 @@ export interface Ticket extends Entity {
 }
 
 export interface TicketNew {
+	id?: number;
 	idCliente: number;
 	idTipoServicio: number;
 	idTecnico: number;
@@ -62,7 +63,7 @@ export interface TicketNew {
 	fechaAsignacion: string;
 	fechaCierre: string;
 	diagnostico: string;
-	solucion: string;
+	solucion?: string;
 }
 
 export interface Usuario extends Entity {

@@ -1,9 +1,10 @@
-import { expect, test } from "vitest";
+import { test } from "vitest";
 import axios from "axios";
 import { TicketApi } from "../service/ApiClient";
 import type { TicketNew } from "../models/entity";
-import { tr } from "framer-motion/client";
+import { i } from "framer-motion/client";
 
+let idTicketCreado: number | undefined;
 //test para crear un ticket
 /*
 {
@@ -35,6 +36,11 @@ test("crear ticket", async () => {
 	try {
 		const response = await TicketApi.crearTicket(nuevoTicket);
 		console.log(" Ticket creado:", response.data);
+		if (typeof response.data.id === "number") {
+			idTicketCreado = response.data.id; // Guardar el ID del ticket creado
+		} else {
+			console.warn("Respuesta sin id de ticket:", response.data);
+		}
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
 			console.log(" Error al crear ticket:", error.response?.data);
@@ -60,7 +66,7 @@ test("listar tickets", async () => {
 
 //obtener un ticket por id
 test("obtener ticket por id", async () => {
-	const ticketId = 6;
+	const ticketId = idTicketCreado || 6; // Cambia esto por un ID válido
 
 	try {
 		const response = await TicketApi.obtenerTicket(ticketId);
@@ -76,7 +82,7 @@ test("obtener ticket por id", async () => {
 
 //actualizar un ticket
 test("actualizar ticket", async () => {
-	const ticketId = 6; // Cambia esto por un ID válido
+	const ticketId = idTicketCreado || 6; // Cambia esto por un ID válido
 	const datosActualizados: TicketNew = {
 		idCliente: 3,
 		idTipoServicio: 1,
@@ -106,7 +112,7 @@ test("actualizar ticket", async () => {
 
 //eliminar un ticket
 test("eliminar ticket", async () => {
-	const ticketId = 1; // Cambia esto por un ID válido
+	const ticketId = idTicketCreado || 1; // Cambia esto por un ID válido
 
 	try {
 		await TicketApi.eliminarTicket(ticketId);
