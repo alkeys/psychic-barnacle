@@ -47,10 +47,6 @@ const Login: React.FC = () => {
 				break;
 			} catch (error) {
 				attempts++;
-				console.error(
-					Intento de inicio de sesión fallido (${attempts}):,
-					error,
-				);
 				if (attempts >= maxAttempts) {
 					alert("Se alcanzaron los máximos intentos de inicio de sesión.");
 				}
