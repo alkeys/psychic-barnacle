@@ -10,7 +10,8 @@ import type {
 } from "../models/entity";
 
 /** URL base de la API */
-const apiUrl = "http://192.168.1.13:9090/innova-1.0-SNAPSHOT/";
+const apiUrl =
+	"https://glowing-guacamole-at64.onrender.com/innova-1.0-SNAPSHOT";
 
 /** Instancia preconfigurada de Axios */
 const apiClient = axios.create({
