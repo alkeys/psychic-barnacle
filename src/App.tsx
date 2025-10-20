@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import AdminPanel from "./pages/admin/AdminPanel";
 import TecnicoPanel from "./pages/tecnico/TecnicoPanel";
 import ClientePanel from "./pages/cliente/ClientePanel";
+import Info from "./pages/Info";
 
 function App() {
 	return (
@@ -15,6 +16,7 @@ function App() {
 				<Route path="/admin" element={<AdminPanel />} />
 				<Route path="/tecnico" element={<TecnicoPanel />} />
 				<Route path="/cliente" element={<ClientePanel />} />
+				<Route path="/info" element={<Info />} />
 			</Routes>
 		</BrowserRouter>
 	);
