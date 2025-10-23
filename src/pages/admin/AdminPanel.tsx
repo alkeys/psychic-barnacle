@@ -50,7 +50,7 @@ export default function AdminPanel() {
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-[#fdf2f8] via-[#fdf2f8] to-[#fbcfe8]/30">
 			<nav className="sticky top-0 z-50 border-b border-[#f472b6]/20 bg-white/80 backdrop-blur-xl shadow-lg shadow-[#f472b6]/5">
-				<div className="mx-auto max-w-7xl px-6 py-4">
+				<div className="mx-auto max-w-10xl px-6 py-4">
 					<div className="flex items-center justify-between">
 						<div className="flex items-center gap-8">
 							<div className="flex items-center gap-3 animate-in fade-in slide-in-from-left duration-700">
@@ -139,7 +139,7 @@ export default function AdminPanel() {
 				</div>
 			</nav>
 
-			<main className="mx-auto max-w-7xl p-6 animate-in fade-in slide-in-from-bottom duration-700 delay-150">
+			<main className="mx-auto max-w-full p-6 animate-in fade-in slide-in-from-bottom duration-700 delay-150">
 				<div className="rounded-2xl bg-white/60 backdrop-blur-sm p-6 shadow-xl shadow-[#f472b6]/5 border border-[#f472b6]/10">
 					{renderContent()}
 				</div>
