@@ -22,7 +22,7 @@ const Dashboard: React.FC = () => {
 		},
 		{
 			id: 2,
-			title: "Técnicos Activos",
+			title: "Técnicos",
 			value: "32",
 			change: "+5%",
 			icon: "🔧",
@@ -87,7 +87,7 @@ const Dashboard: React.FC = () => {
 					prevStats.map((stat) => {
 						if (stat.title === "Total Clientes")
 							return { ...stat, value: totalClientes.toString() };
-						if (stat.title === "Técnicos Activos")
+						if (stat.title === "Técnicos")
 							return { ...stat, value: totalTecnicos.toString() };
 						if (stat.title === "Usuarios Registrados")
 							return { ...stat, value: totalUsuarios.toString() };
