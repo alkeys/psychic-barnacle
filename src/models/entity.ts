@@ -40,17 +40,18 @@ export interface TipoServicio extends Entity {
 
 export interface Ticket extends Entity {
 	diagnostico: string;
-	fechaSolicitud: string; // Considerar usar el tipo Date si se va a manipular
-
-	// IDs de las relaciones
+	fechaSolicitud: string;
+	fechaAsignacion?: string;
+	fechaCierre?: string;
 	idCliente: number;
 	idEstado: number;
+	idTecnico?: number;
 	idTipoServicio: number;
-
-	// Campos denormalizados (traídos por un JOIN)
-	nombreCliente: string;
-	nombreEstado: string;
-	nombreTipoServicio: string;
+	nombreCliente?: string;
+	nombreEstado?: string;
+	nombreTecnico?: string;
+	nombreTipoServicio?: string;
+	solucion?: string;
 }
 
 export interface TicketNew {
