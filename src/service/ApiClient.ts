@@ -61,15 +61,15 @@ export const ClienteApi = {
    EstadoTicket
    =========================================================== */
 export const EstadoTicketApi = {
-	listarEstados: () => apiClient.get<EstadoTicket[]>("/estados/listar"),
+	listarEstados: () => apiClient.get<EstadoTicket[]>("/estados-ticket/listar"),
 	obtenerEstado: (id: string | number) =>
-		apiClient.get<EstadoTicket>(`/estados/obtener/${id}`),
+		apiClient.get<EstadoTicket>(`/estados-ticket/obtener/${id}`),
 	crearEstado: (data: EstadoTicket) =>
-		apiClient.post<EstadoTicket>("/estados/crear", data),
+		apiClient.post<EstadoTicket>("/estados-ticket/crear", data),
 	actualizarEstado: (id: string | number, data: EstadoTicket) =>
-		apiClient.put<EstadoTicket>(`/estados/actualizar/${id}`, data),
+		apiClient.put<EstadoTicket>(`/estados-ticket/actualizar/${id}`, data),
 	eliminarEstado: (id: string | number) =>
-		apiClient.delete<void>(`/estados/eliminar/${id}`),
+		apiClient.delete<void>(`/estados-ticket/eliminar/${id}`),
 };
 
 /* ===========================================================

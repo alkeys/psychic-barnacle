@@ -31,13 +31,12 @@ export interface ClienteGet extends Cliente {
 }
 
 export interface EstadoTicket extends Entity {
-	nombre: string;
+	nombreEstado: string;
 }
 
 export interface TipoServicio extends Entity {
 	nombre: string;
 }
-
 export interface Ticket extends Entity {
 	diagnostico: string;
 	fechaSolicitud: string;
