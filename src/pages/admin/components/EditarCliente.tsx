@@ -1,23 +1,40 @@
 import React, { useState } from "react";
 import type { Cliente } from "../../../models/entity";
+import { ClienteApi } from "../../../service/ApiClient";
 
 interface EditarClienteProps {
 	cliente: Cliente;
-	onGuardar: (cliente: Cliente) => void;
-	onCancelar: () => void;
 }
 
-const EditarCliente: React.FC<EditarClienteProps> = ({
-	cliente,
-	onGuardar,
-	onCancelar,
-}) => {
+const EditarCliente: React.FC<EditarClienteProps> = ({ cliente }) => {
 	const [nombreCompleto, setNombreCompleto] = useState(cliente.nombreCompleto);
 	const [correo, setCorreo] = useState(cliente.correo);
 	const [telefono, setTelefono] = useState(cliente.telefono);
 
-	const handleGuardar = () => {
-		onGuardar({ ...cliente, nombreCompleto, correo, telefono });
+	const handleGuardar = async () => {
+		try {
+			const clienteActualizado: Cliente = {
+				...cliente,
+				nombreCompleto,
+				correo,
+				telefono,
+			};
+			if (
+				clienteActualizado.id === undefined ||
+				clienteActualizado.id === null
+			) {
+				alert("No se puede actualizar: el cliente no tiene id");
+				return;
+			}
+			await ClienteApi.actualizarCliente(
+				clienteActualizado.id,
+				clienteActualizado,
+			);
+			alert("Cliente actualizado con éxito");
+		} catch (error) {
+			console.error("Error al actualizar el cliente:", error);
+			alert("Hubo un error al actualizar el cliente");
+		}
 	};
 
 	return (
@@ -39,9 +56,6 @@ const EditarCliente: React.FC<EditarClienteProps> = ({
 			/>
 			<button type="button" onClick={handleGuardar}>
 				Guardar
-			</button>
-			<button type="button" onClick={onCancelar}>
-				Cancelar
 			</button>
 		</div>
 	);

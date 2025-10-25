@@ -27,40 +27,6 @@ const ListarTecnicos: React.FC = () => {
 		setTecnicoSeleccionado(tecnico);
 	};
 
-	const handleEliminar = async (id?: number) => {
-		if (id === undefined || id === null) {
-			console.error("El técnico no tiene un ID válido para eliminar.");
-			return;
-		}
-		const confirmation = window.confirm(
-			"¿Estás seguro de que deseas eliminar este tecnico?",
-		);
-		if (confirmation) {
-			try {
-				await tecnicoApi.eliminarTecnico(id);
-				fetchTecnicos(); // Recargar la lista de tecnicos
-			} catch (error) {
-				console.error("Error al eliminar el tecnico:", error);
-			}
-		}
-	};
-
-	const handleGuardar = async (tecnicoActualizado: Tecnico) => {
-		const { id } = tecnicoActualizado;
-		if (id === undefined || id === null) {
-			console.error("El técnico no tiene un ID válido para actualizar.");
-			return;
-		}
-
-		try {
-			await tecnicoApi.actualizarTecnico(id, tecnicoActualizado);
-			setTecnicoSeleccionado(null); // Ocultar el formulario de edición
-			fetchTecnicos(); // Recargar la lista de tecnicos
-		} catch (error) {
-			console.error("Error al guardar el tecnico:", error);
-		}
-	};
-
 	const handleCancelar = () => {
 		setTecnicoSeleccionado(null);
 	};
@@ -82,11 +48,7 @@ const ListarTecnicos: React.FC = () => {
 			{tecnicoSeleccionado && (
 				<div>
 					<h2>Editar Tecnico</h2>
-					<EditarTecnico
-						tecnico={tecnicoSeleccionado}
-						onGuardar={handleGuardar}
-						onCancelar={handleCancelar}
-					/>
+					<EditarTecnico tecnico={tecnicoSeleccionado} />
 				</div>
 			)}
 		</div>

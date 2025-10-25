@@ -1,23 +1,41 @@
 import React, { useState } from "react";
 import type { Tecnico } from "../../../models/entity";
-
+import { tecnicoApi } from "../../../service/ApiClient";
 interface EditarTecnicoProps {
 	tecnico: Tecnico;
-	onGuardar: (tecnico: Tecnico) => void;
-	onCancelar: () => void;
 }
 
-const EditarTecnico: React.FC<EditarTecnicoProps> = ({
-	tecnico,
-	onGuardar,
-	onCancelar,
-}) => {
+const EditarTecnico: React.FC<EditarTecnicoProps> = ({ tecnico }) => {
 	const [nombreCompleto, setNombreCompleto] = useState(tecnico.nombreCompleto);
 	const [especialidad, setEspecialidad] = useState(tecnico.especialidad);
 
 	const handleGuardar = () => {
-		onGuardar({ ...tecnico, nombreCompleto, especialidad });
+		console.log("Guardando técnico con ID:", tecnico.id);
+		try {
+			const tecnicoActualizado: Tecnico = {
+				...tecnico,
+				nombreCompleto,
+				especialidad,
+			};
+			if (!tecnico.id) {
+				throw new Error("El técnico no tiene un ID válido.");
+			}
+			tecnicoApi
+				.actualizarTecnico(tecnico.id, tecnicoActualizado)
+				.then(() => {
+					alert("Técnico actualizado correctamente");
+				})
+				.catch((error) => {
+					console.error("Error al actualizar el técnico:", error);
+					alert("Error al actualizar el técnico");
+				});
+		} catch (error) {
+			console.error("Error al actualizar el técnico:", error);
+			alert("Error al actualizar el técnico");
+		}
 	};
+
+	const onCancelar = () => {};
 
 	return (
 		<div>
@@ -36,9 +54,6 @@ const EditarTecnico: React.FC<EditarTecnicoProps> = ({
 			/>
 			<button type="button" onClick={handleGuardar}>
 				Guardar
-			</button>
-			<button type="button" onClick={onCancelar}>
-				Cancelar
 			</button>
 		</div>
 	);

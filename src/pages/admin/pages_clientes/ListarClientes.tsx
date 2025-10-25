@@ -81,11 +81,7 @@ const ListarClientes: React.FC = () => {
 			{clienteSeleccionado && (
 				<div>
 					<h2>Editar Cliente</h2>
-					<EditarCliente
-						cliente={clienteSeleccionado}
-						onGuardar={handleGuardar}
-						onCancelar={handleCancelar}
-					/>
+					<EditarCliente cliente={clienteSeleccionado} />
 				</div>
 			)}
 		</div>
