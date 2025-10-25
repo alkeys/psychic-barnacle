@@ -7,6 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import Dashboard from "./Dashboard";
 import { useNavigate } from "react-router-dom";
 import ListarTickets from "./components/Listatickets";
+import ActualizarTickets from "./components/AtualizarTickets";
 
 export default function TecnicoPanel() {
 	const [activeTab, setActiveTab] = useState("dashboard");
@@ -28,6 +29,8 @@ export default function TecnicoPanel() {
 				return <Dashboard />;
 			case "tickets":
 				return <ListarTickets />;
+			case "actualizar":
+				return <ActualizarTickets />;
 
 			default:
 				return <Dashboard />;
@@ -37,6 +40,7 @@ export default function TecnicoPanel() {
 	const navItems = [
 		{ id: "dashboard", label: "Dashboard", icon: "📊" },
 		{ id: "tickets", label: "Tickets", icon: "🎟️" },
+		{ id: "actualizar", label: "Actualizar Tickets", icon: "🛠️" },
 	];
 
 	return (
