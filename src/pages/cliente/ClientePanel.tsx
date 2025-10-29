@@ -6,6 +6,8 @@ import { useAuth } from "../../context/AuthContext";
 // Importación de componentes
 import Dashboard from "./Dashboard";
 import { useNavigate } from "react-router-dom";
+import Tickets from "./pages/Tickets";
+import EstadoTickets from "./pages/EstadoTickets";
 
 export default function ClientePanel() {
 	const [activeTab, setActiveTab] = useState("dashboard");
@@ -25,13 +27,21 @@ export default function ClientePanel() {
 		switch (activeTab) {
 			case "dashboard":
 				return <Dashboard />;
+			case "Crear Ticket":
+				return <Tickets />;
+			case "Estado de Tickets":
+				return <EstadoTickets />;
 
 			default:
 				return <Dashboard />;
 		}
 	};
 
-	const navItems = [{ id: "dashboard", label: "Dashboard", icon: "📊" }];
+	const navItems = [
+		{ id: "dashboard", label: "Dashboard", icon: "📊" },
+		{ id: "Crear Ticket", label: "Crear Ticket", icon: "🎟️" },
+		{ id: "Estado de Tickets", label: "Estado de Tickets", icon: "📋" },
+	];
 
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-[#fdf2f8] via-[#fdf2f8] to-[#fbcfe8]/30">
