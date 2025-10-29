@@ -8,6 +8,7 @@ import Dashboard from "./Dashboard";
 import { useNavigate } from "react-router-dom";
 import Tickets from "./pages/Tickets";
 import EstadoTickets from "./pages/EstadoTickets";
+import ConfirmacionTickets from "./pages/ConfirmacionTickets";
 
 export default function ClientePanel() {
 	const [activeTab, setActiveTab] = useState("dashboard");
@@ -31,6 +32,8 @@ export default function ClientePanel() {
 				return <Tickets />;
 			case "Estado de Tickets":
 				return <EstadoTickets />;
+			case "Confirmacion de Tickets":
+				return <ConfirmacionTickets />;
 
 			default:
 				return <Dashboard />;
@@ -41,6 +44,11 @@ export default function ClientePanel() {
 		{ id: "dashboard", label: "Dashboard", icon: "📊" },
 		{ id: "Crear Ticket", label: "Crear Ticket", icon: "🎟️" },
 		{ id: "Estado de Tickets", label: "Estado de Tickets", icon: "📋" },
+			{
+				id: "Confirmacion de Tickets",
+				label: "Confirmacion de Tickets",
+				icon: "✅",
+			}
 	];
 
 	return (
