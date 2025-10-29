@@ -52,8 +52,10 @@ export interface Ticket extends Entity {
 	nombreTipoServicio?: string;
 	solucion?: string;
 }
-
 export interface TicketNew {
+	nombreTecnico?: string;
+	NombreCliente?: string;
+	nombreEstado?: string;
 	id?: number;
 	idCliente: number;
 	idTipoServicio: number;
