@@ -52,8 +52,12 @@ const EditarTicket: React.FC<EditarTicketProps> = ({ ticket }) => {
 			try {
 				const Response = await EstadoTicketApi.listarEstados();
 				const data = Response.data ?? Response;
-				setTiposdeEstado(data);
-				console.log("Estados de tickets obtenidos:", data);
+				//eliminar la opcion de estado de cerrado
+				const estadosFiltrados = data.filter(
+					(estado) => estado.nombreEstado !== "Cerrado",
+				);
+				setTiposdeEstado(estadosFiltrados);
+				console.log("Estados de tickets obtenidos:", estadosFiltrados);
 			} catch (error) {
 				console.error("Error al obtener los estados de tickets:", error);
 			}
