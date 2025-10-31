@@ -2,14 +2,16 @@
 
 import type React from "react";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react"; // Importamos useMemo
 import type { Ticket } from "../../../models/entity";
 import { TicketApi } from "../../../service/ApiClient";
 import { useAuth } from "@/context/AuthContext";
 import EditarTicket from "./EditarTicket";
 
 const ActualizarTickets: React.FC = () => {
-	const [ticket, setTicket] = useState<Ticket[]>([]);
+	const [allTickets, setAllTickets] = useState<Ticket[]>([]); // Almacena todos los tickets del técnico
+	const [searchTerm, setSearchTerm] = useState<string>(""); // Nuevo estado para el término de búsqueda
+
 	// ocupo el context para optener el id del usuario tecnico logeado
 	const { currentUser } = useAuth();
 
@@ -19,11 +21,28 @@ const ActualizarTickets: React.FC = () => {
 	const fetchTicket = async () => {
 		try {
 			const response = await TicketApi.listarTickets();
-			// filtro los tickets por el id del tecnico logeado
-			const filteredTickets = response.data.filter(
+
+			// 1. Filtrar los tickets por el id del tecnico logeado
+			const filteredByTech = response.data.filter(
 				(ticket: Ticket) => ticket.idTecnico === currentUser?.idTecnico,
 			);
-			setTicket(filteredTickets);
+
+			// 2. Ordenar los tickets: "En Proceso" primero (manteniendo el filtro anterior)
+			const sortedTickets = filteredByTech.sort((a, b) => {
+				const estadoA = (a.nombreEstado ?? "").toUpperCase();
+				const estadoB = (b.nombreEstado ?? "").toUpperCase();
+				const EN_PROCESO = "EN PROCESO";
+
+				if (estadoA === EN_PROCESO && estadoB !== EN_PROCESO) {
+					return -1;
+				}
+				if (estadoB === EN_PROCESO && estadoA !== EN_PROCESO) {
+					return 1;
+				}
+				return 0;
+			});
+
+			setAllTickets(sortedTickets); // Usamos setAllTickets
 		} catch (error) {
 			setError("Error al obtener el ticket");
 		} finally {
@@ -34,6 +53,42 @@ const ActualizarTickets: React.FC = () => {
 	useEffect(() => {
 		fetchTicket();
 	}, []);
+
+	// 🌟 Lógica de Filtrado de Búsqueda 🌟
+	// Usamos useMemo para recalcular la lista de tickets solo cuando allTickets o searchTerm cambien
+	const ticketsToShow = useMemo(() => {
+		if (!searchTerm) {
+			return allTickets;
+		}
+
+		const lowerCaseSearchTerm = searchTerm.toLowerCase();
+
+		return allTickets.filter(
+			(ticket) =>
+				// Búsqueda por Nombre del Cliente
+				ticket.nombreCliente?.toLowerCase().includes(lowerCaseSearchTerm) ||
+				// Búsqueda por Tipo de Servicio
+				ticket.nombreTipoServicio
+					?.toLowerCase()
+					.includes(lowerCaseSearchTerm) ||
+				// Búsqueda por Estado
+				ticket.nombreEstado
+					?.toLowerCase()
+					.includes(lowerCaseSearchTerm) ||
+				// Búsqueda por Diagnóstico (si existe)
+				ticket.diagnostico
+					?.toLowerCase()
+					.includes(lowerCaseSearchTerm) ||
+				// Búsqueda por Solución (si existe)
+				ticket.solucion
+					?.toLowerCase()
+					.includes(lowerCaseSearchTerm) ||
+				// Búsqueda por ID del Ticket
+				ticket.id
+					?.toString()
+					.includes(lowerCaseSearchTerm),
+		);
+	}, [allTickets, searchTerm]); // Dependencias del useMemo
 
 	if (loading)
 		return (
@@ -57,7 +112,7 @@ const ActualizarTickets: React.FC = () => {
 								viewBox="0 0 24 24"
 								stroke="currentColor"
 							>
-								<title>ok</title>
+								<title>Error Icon</title>
 								<path
 									strokeLinecap="round"
 									strokeLinejoin="round"
@@ -81,16 +136,46 @@ const ActualizarTickets: React.FC = () => {
 				<p className="text-gray-600">
 					Gestiona y actualiza los tickets asignados a ti
 				</p>
-				<div className="mt-4 flex items-center gap-2">
-					<span className="text-sm text-gray-500">Total de tickets:</span>
-					<span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
-						{ticket.length}
-					</span>
+
+				{/* 🔍 Barra de Búsqueda */}
+				<div className="mt-6 mb-4 flex gap-4 items-center">
+					<div className="relative flex-1 max-w-lg">
+						<svg
+							className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<title>Search Icon</title>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+							/>
+						</svg>
+						<input
+							type="text"
+							placeholder="Buscar por cliente, servicio, estado o diagnóstico..."
+							value={searchTerm}
+							onChange={(e) => setSearchTerm(e.target.value)}
+							className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+						/>
+					</div>
+
+					{/* Contador de Tickets */}
+					<div className="flex items-center gap-2">
+						<span className="text-sm text-gray-500">Tickets visibles:</span>
+						<span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
+							{ticketsToShow.length} / {allTickets.length}
+						</span>
+					</div>
 				</div>
 			</div>
 
 			<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-				{ticket.map((ticket) => (
+				{/* 🌟 Mapeamos sobre ticketsToShow en lugar de ticket 🌟 */}
+				{ticketsToShow.map((ticket) => (
 					<div
 						key={ticket.id}
 						className="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100"
@@ -119,7 +204,7 @@ const ActualizarTickets: React.FC = () => {
 										viewBox="0 0 24 24"
 										stroke="currentColor"
 									>
-										<title>ok</title>
+										<title>Client Icon</title>
 										<path
 											strokeLinecap="round"
 											strokeLinejoin="round"
@@ -147,7 +232,7 @@ const ActualizarTickets: React.FC = () => {
 										viewBox="0 0 24 24"
 										stroke="currentColor"
 									>
-										<title>ok</title>
+										<title>Service Icon</title>
 										<path
 											strokeLinecap="round"
 											strokeLinejoin="round"
@@ -175,7 +260,7 @@ const ActualizarTickets: React.FC = () => {
 										viewBox="0 0 24 24"
 										stroke="currentColor"
 									>
-										<title>ok</title>
+										<title>Date Icon</title>
 										<path
 											strokeLinecap="round"
 											strokeLinejoin="round"
@@ -203,7 +288,7 @@ const ActualizarTickets: React.FC = () => {
 										viewBox="0 0 24 24"
 										stroke="currentColor"
 									>
-										<title>ok</title>
+										<title>Technician Icon</title>
 										<path
 											strokeLinecap="round"
 											strokeLinejoin="round"
@@ -260,7 +345,7 @@ const ActualizarTickets: React.FC = () => {
 				))}
 			</div>
 
-			{ticket.length === 0 && (
+			{ticketsToShow.length === 0 && ( // Usamos ticketsToShow para el mensaje de no resultados
 				<div className="text-center py-12">
 					<div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
 						<svg
@@ -269,7 +354,7 @@ const ActualizarTickets: React.FC = () => {
 							viewBox="0 0 24 24"
 							stroke="currentColor"
 						>
-							<title>ok</title>
+							<title>Empty List Icon</title>
 							<path
 								strokeLinecap="round"
 								strokeLinejoin="round"
@@ -279,10 +364,14 @@ const ActualizarTickets: React.FC = () => {
 						</svg>
 					</div>
 					<h3 className="text-lg font-semibold text-gray-900 mb-2">
-						No hay tickets asignados
+						{searchTerm
+							? "No se encontraron resultados"
+							: "No hay tickets asignados"}
 					</h3>
 					<p className="text-gray-600">
-						No tienes tickets asignados en este momento.
+						{searchTerm
+							? "Intenta buscar con un término diferente."
+							: "No tienes tickets asignados en este momento."}
 					</p>
 				</div>
 			)}
