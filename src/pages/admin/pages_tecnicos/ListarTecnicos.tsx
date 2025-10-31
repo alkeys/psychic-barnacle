@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { Tecnico } from "../../../models/entity";
 import { tecnicoApi } from "../../../service/ApiClient";
-// Asegúrate de que la ruta de importación sea correcta
 import EditarTecnico from "../components/EditarTecnico";
 
 const ListarTecnicos: React.FC = () => {
@@ -20,10 +19,10 @@ const ListarTecnicos: React.FC = () => {
 		}
 	};
 
-	// Vuelve a cargar la lista después de una edición exitosa
+	// 🔁 Recargar la lista luego de actualizar
 	const handleActualizacionExitosa = () => {
-		setTecnicoSeleccionado(null); // Oculta el formulario de edición
-		fetchTecnicos(); // Vuelve a cargar la lista de técnicos
+		setTecnicoSeleccionado(null);
+		fetchTecnicos();
 	};
 
 	useEffect(() => {
@@ -66,7 +65,7 @@ const ListarTecnicos: React.FC = () => {
 									<button
 										type="button"
 										onClick={() => handleEditar(tecnico)}
-										className="py-2 px-4 bg-indigo-600 text-white font-medium rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition duration-150"
+										className="py-2 px-4 bg-indigo-600 text-white font-medium rounded-lg shadow-md hover:bg-indigo-700 transition duration-150"
 									>
 										Editar
 									</button>
@@ -80,10 +79,11 @@ const ListarTecnicos: React.FC = () => {
 					<h2 className="text-2xl font-bold mb-6 text-gray-700">
 						Editar Técnico
 					</h2>
+
 					<EditarTecnico
 						tecnico={tecnicoSeleccionado}
-						onCancel={handleCancelar}
-						onSave={handleActualizacionExitosa} // Pasa el handler de actualización exitosa
+						onCancelar={handleCancelar}
+						onGuardar={handleActualizacionExitosa}
 					/>
 				</div>
 			)}
