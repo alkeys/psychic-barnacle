@@ -15,7 +15,7 @@ const Login: React.FC = () => {
 
 	const onSubmit: SubmitHandler<Usuario> = async (data) => {
 		let attempts = 0;
-		const maxAttempts = 100;
+		const maxAttempts = 3;
 		while (attempts < maxAttempts) {
 			try {
 				const response = await LoginApi.login(data);
