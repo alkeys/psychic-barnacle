@@ -9,6 +9,8 @@ import Usuarios from "./Usuarios";
 import Tecnicos from "./Tecnicos";
 import Clientes from "./Clientes";
 import { useNavigate } from "react-router-dom";
+import { List } from "lucide-react";
+import ListarTickets from "../tecnico/components/Listatickets";
 
 export default function AdminPanel() {
 	const [activeTab, setActiveTab] = useState("dashboard");
@@ -34,7 +36,8 @@ export default function AdminPanel() {
 				return <Tecnicos />;
 			case "clientes":
 				return <Clientes />;
-
+			case "ListarTickets":
+				return <ListarTickets />;
 			default:
 				return <Dashboard />;
 		}
@@ -45,6 +48,7 @@ export default function AdminPanel() {
 		{ id: "clientes", label: "Clientes", icon: "👥" },
 		{ id: "usuarios", label: "Usuarios", icon: "👤" },
 		{ id: "tecnicos", label: "Técnicos", icon: "🔧" },
+		{ id: "ListarTickets", label: "Tickets", icon: <List size={16} /> },
 	];
 
 	return (

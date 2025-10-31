@@ -118,7 +118,7 @@ export default function Home() {
 						<Button
 							size="lg"
 							className="bg-pink-950 text-white hover:bg-pink-900 text-lg px-8 py-6 h-auto group shadow-lg"
-							onClick={() => navigate("/login")}
+							onClick={() => navigate("/info")}
 						>
 							Acceder al Sistema
 							<ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
