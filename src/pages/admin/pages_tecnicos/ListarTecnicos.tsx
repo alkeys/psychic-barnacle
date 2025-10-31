@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import type { Tecnico } from "../../../models/entity";
 import { tecnicoApi } from "../../../service/ApiClient";
+// Asegúrate de que la ruta de importación sea correcta
 import EditarTecnico from "../components/EditarTecnico";
 
 const ListarTecnicos: React.FC = () => {
@@ -19,6 +20,12 @@ const ListarTecnicos: React.FC = () => {
 		}
 	};
 
+	// Vuelve a cargar la lista después de una edición exitosa
+	const handleActualizacionExitosa = () => {
+		setTecnicoSeleccionado(null); // Oculta el formulario de edición
+		fetchTecnicos(); // Vuelve a cargar la lista de técnicos
+	};
+
 	useEffect(() => {
 		fetchTecnicos();
 	}, []);
@@ -32,23 +39,52 @@ const ListarTecnicos: React.FC = () => {
 	};
 
 	return (
-		<div>
-			<h1>Lista de Tecnicos</h1>
-			<ul>
-				{tecnicos.map((tecnico) => (
-					<li key={tecnico.id}>
-						{tecnico.nombreCompleto} - {tecnico.especialidad}
-						<button type="button" onClick={() => handleEditar(tecnico)}>
-							Editar
-						</button>
-					</li>
-				))}
-			</ul>
+		<div className="p-6 max-w-4xl mx-auto bg-gray-50 min-h-screen">
+			<h1 className="text-3xl font-bold mb-8 text-indigo-700 border-b-2 border-indigo-200 pb-2">
+				Lista de Técnicos
+			</h1>
 
-			{tecnicoSeleccionado && (
-				<div>
-					<h2>Editar Tecnico</h2>
-					<EditarTecnico tecnico={tecnicoSeleccionado} />
+			{!tecnicoSeleccionado ? (
+				<div className="space-y-4">
+					{tecnicos.length === 0 ? (
+						<p className="text-gray-500">No hay técnicos registrados.</p>
+					) : (
+						<ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+							{tecnicos.map((tecnico) => (
+								<li
+									key={tecnico.id}
+									className="p-4 bg-white shadow-lg rounded-lg flex justify-between items-center transition duration-300 hover:shadow-xl"
+								>
+									<div>
+										<p className="font-semibold text-gray-800">
+											{tecnico.nombreCompleto}
+										</p>
+										<p className="text-sm text-indigo-600">
+											Especialidad: {tecnico.especialidad}
+										</p>
+									</div>
+									<button
+										type="button"
+										onClick={() => handleEditar(tecnico)}
+										className="py-2 px-4 bg-indigo-600 text-white font-medium rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition duration-150"
+									>
+										Editar
+									</button>
+								</li>
+							))}
+						</ul>
+					)}
+				</div>
+			) : (
+				<div className="mt-8 p-6 bg-white shadow-2xl rounded-xl border border-gray-200">
+					<h2 className="text-2xl font-bold mb-6 text-gray-700">
+						Editar Técnico
+					</h2>
+					<EditarTecnico
+						tecnico={tecnicoSeleccionado}
+						onCancel={handleCancelar}
+						onSave={handleActualizacionExitosa} // Pasa el handler de actualización exitosa
+					/>
 				</div>
 			)}
 		</div>
