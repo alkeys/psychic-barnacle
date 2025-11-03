@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useEffect, useState, useMemo, useCallback } from "react"
 import type { Ticket } from "@/models/entity"
 import { TicketApi } from "@/service/ApiClient"
@@ -356,6 +358,7 @@ const statusBadgeStyle: React.CSSProperties = {
   fontWeight: "600",
   color: "#ffffff",
   textAlign: "center",
+  boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
 }
 
 const loadingStyle: React.CSSProperties = {
@@ -426,14 +429,17 @@ const emptyStateStyle: React.CSSProperties = {
 // Función para obtener color según estado
 function getStatusColor(status: string): string {
   const statusColors: { [key: string]: string } = {
-    ABIERTO: "#3b82f6",
-    "EN PROGRESO": "#f59e0b",
-    CERRADO: "#10b981",
-    PENDIENTE: "#8b5cf6",
-    RESUELTO: "#10b981",
-    RECHAZADO: "#ef4444",
+    ABIERTO: "#0ea5e9", // Azul más oscuro
+    "EN PROGRESO": "#f59e0b", // Naranja
+    CERRADO: "#059669", // Verde más oscuro
+    PENDIENTE: "#7c3aed", // Púrpura
+    RESUELTO: "#059669", // Verde
+    RECHAZADO: "#dc2626", // Rojo
+    ACTIVO: "#0ea5e9", // Azul
+    INACTIVO: "#6b7280", // Gris
+    "EN ESPERA": "#d97706", // Ámbar
   }
-  return statusColors[status] || "#6b7280"
+  return statusColors[status?.toUpperCase()] || "#6b7280"
 }
 
 // Función de utilidad para truncar texto
