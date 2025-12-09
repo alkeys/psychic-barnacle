@@ -2,7 +2,7 @@
 
 import { ClienteApi } from "../service/ApiClient";
 import type { Cliente } from "../models/entity";
-import { test, expect } from "vitest";
+import { test } from "vitest";
 
 let idClienteCreado: number | undefined;
 /*

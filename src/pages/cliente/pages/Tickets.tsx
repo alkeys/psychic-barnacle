@@ -1,12 +1,11 @@
 "use client"
 
+import { useAuth } from "@/context/AuthContext"
 import type React from "react"
 import { useEffect, useState } from "react"
 import { useForm, type SubmitHandler } from "react-hook-form"
-import type { EstadoTicket, TicketNew } from "../../../models/entity"
+import type { EstadoTicket, Tecnico, TicketNew } from "../../../models/entity"
 import { EstadoTicketApi, TicketApi, tecnicoApi } from "../../../service/ApiClient"
-import type { Tecnico } from "../../../models/entity"
-import { useAuth } from "@/context/AuthContext"
 
 const Tickets: React.FC = () => {
   const { register, handleSubmit, reset, watch, setValue } = useForm<TicketNew>()
@@ -93,7 +92,7 @@ const Tickets: React.FC = () => {
     console.log("Nuevo Ticket:", nuevoTicket)
 
     try {
-      const response = await TicketApi.crearTicket(nuevoTicket)
+      await TicketApi.crearTicket(nuevoTicket)
       alert("Ticket creado con éxito.")
     } catch (error) {
       console.error("Error al crear el ticket:", error)

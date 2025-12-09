@@ -202,7 +202,7 @@ const ListarTickets: React.FC = () => {
                     <span
                       style={{
                         ...statusBadgeStyle,
-                        backgroundColor: getStatusColor(ticket.nombreEstado),
+                        backgroundColor: getStatusColor(ticket.nombreEstado || ''),
                       }}
                     >
                       {ticket.nombreEstado}
